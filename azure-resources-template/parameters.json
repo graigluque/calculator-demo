@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vulnerabilityAssessments_Default_storageContainerPath": {
+            "value": null
+        },
+        "sites_glc_calculator_demo_webapp_name": {
+            "value": null
+        },
+        "sites_glc_calculator_demo_funcapp_name": {
+            "value": null
+        },
+        "servers_glc_calculator_demo_server_name": {
+            "value": null
+        },
+        "serverfarms_ASP_calculatordemo_8234_name": {
+            "value": null
+        },
+        "serverfarms_ASP_calculatordemo_a2bd_name": {
+            "value": null
+        },
+        "namespaces_glc_calculator_demo_bus_name": {
+            "value": null
+        },
+        "components_glc_calculator_demo_webapp_name": {
+            "value": null
+        },
+        "components_glc_calculator_demo_funcapp_name": {
+            "value": null
+        },
+        "SignalR_glc_calculator_demo_signalr_name": {
+            "value": null
+        },
+        "actionGroups_Application_Insights_Smart_Detection_name": {
+            "value": null
+        },
+        "smartdetectoralertrules_failure_anomalies___glc_calculator_demo_webapp_name": {
+            "value": null
+        },
+        "smartdetectoralertrules_failure_anomalies___glc_calculator_demo_funcapp_name": {
+            "value": null
+        },
+        "workspaces_DefaultWorkspace_a1cfa2e7_8766_4396_8ca0_669a148ad292_EUS_externalid": {
+            "value": null
+        }
+    }
+}
