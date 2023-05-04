@@ -1,0 +1,37 @@
+<div class="example-container">
+    <h2>Simple Calculator Demo</h2>
+
+    <p>
+        <mat-form-field appearance="outline">
+            <mat-label>Enter fisrt number</mat-label>
+            <input matInput maxlength="10" placeholder="Ex. 4600" [(ngModel)]="firstText">
+            <mat-hint>Max {{firstText.length}}/10</mat-hint>
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field appearance="outline">
+            <mat-label>Enter second number</mat-label>
+            <input matInput maxlength="10" placeholder="Ex. 4600" [(ngModel)]="secondText">
+            <mat-hint>Max {{secondText.length}}/10</mat-hint>
+        </mat-form-field>
+    </p>
+    <section>
+        <p class="p-operator">
+            <button mat-flat-button color="primary" (click)="onOperationClick('Add')">Add (+)</button>
+            <button mat-flat-button color="accent" (click)="onOperationClick('Sub')">Sub (-)</button>
+        </p>
+        <p class="p-operator">
+            <button mat-flat-button color="warn" (click)="onOperationClick('Mul')">Mul (*)</button>
+            <button mat-flat-button color="success" (click)="onOperationClick('Div')">Div (/)</button>
+        </p>
+        <p class="p-operator">
+            <button mat-flat-button color="clear" (click)="onClearClick()">Clear</button>
+        </p>
+    </section>
+    <h4>Result{{(messages.length > 1)? "s": ""}}</h4>
+    <div *ngFor="let item of messages">
+        <div>{{ item }}</div>
+    </div>
+    <br>
+    <div class="version">v {{ appVersion }}</div>
+</div>

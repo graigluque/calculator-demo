@@ -1,0 +1,41 @@
+.example-container {
+    display: grid;
+    justify-content: center;
+    text-align: center;
+    // align-content: center;
+}
+
+.p-operator {
+    display: flex;
+    flex-direction: row;
+    font-size: 30px;
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.p-operator button {
+    flex: 50%;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.version {
+    font-style: italic;
+    font-size: 14px;
+}
+
+@media (max-width: 300px) {
+    .p-operator {
+        flex-direction: column;
+        margin: 0px;
+    }
+
+    .p-operator button {
+        flex: 50%;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+}

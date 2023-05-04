@@ -1,0 +1,2159 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vulnerabilityAssessments_Default_storageContainerPath": {
+            "type": "SecureString"
+        },
+        "sites_glc_calculator_demo_webapp_name": {
+            "defaultValue": "glc-calculator-demo-webapp",
+            "type": "String"
+        },
+        "sites_glc_calculator_demo_funcapp_name": {
+            "defaultValue": "glc-calculator-demo-funcapp",
+            "type": "String"
+        },
+        "servers_glc_calculator_demo_server_name": {
+            "defaultValue": "glc-calculator-demo-server",
+            "type": "String"
+        },
+        "serverfarms_ASP_calculatordemo_8234_name": {
+            "defaultValue": "ASP-calculatordemo-8234",
+            "type": "String"
+        },
+        "serverfarms_ASP_calculatordemo_a2bd_name": {
+            "defaultValue": "ASP-calculatordemo-a2bd",
+            "type": "String"
+        },
+        "namespaces_glc_calculator_demo_bus_name": {
+            "defaultValue": "glc-calculator-demo-bus",
+            "type": "String"
+        },
+        "components_glc_calculator_demo_webapp_name": {
+            "defaultValue": "glc-calculator-demo-webapp",
+            "type": "String"
+        },
+        "components_glc_calculator_demo_funcapp_name": {
+            "defaultValue": "glc-calculator-demo-funcapp",
+            "type": "String"
+        },
+        "SignalR_glc_calculator_demo_signalr_name": {
+            "defaultValue": "glc-calculator-demo-signalr",
+            "type": "String"
+        },
+        "actionGroups_Application_Insights_Smart_Detection_name": {
+            "defaultValue": "Application Insights Smart Detection",
+            "type": "String"
+        },
+        "smartdetectoralertrules_failure_anomalies___glc_calculator_demo_webapp_name": {
+            "defaultValue": "failure anomalies - glc-calculator-demo-webapp",
+            "type": "String"
+        },
+        "smartdetectoralertrules_failure_anomalies___glc_calculator_demo_funcapp_name": {
+            "defaultValue": "failure anomalies - glc-calculator-demo-funcapp",
+            "type": "String"
+        },
+        "workspaces_DefaultWorkspace_a1cfa2e7_8766_4396_8ca0_669a148ad292_EUS_externalid": {
+            "defaultValue": "/subscriptions/a1cfa2e7-8766-4396-8ca0-669a148ad292/resourceGroups/DefaultResourceGroup-EUS/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-a1cfa2e7-8766-4396-8ca0-669a148ad292-EUS",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/actionGroups",
+            "apiVersion": "2023-01-01",
+            "name": "[parameters('actionGroups_Application_Insights_Smart_Detection_name')]",
+            "location": "Global",
+            "properties": {
+                "groupShortName": "SmartDetect",
+                "enabled": true,
+                "emailReceivers": [],
+                "smsReceivers": [],
+                "webhookReceivers": [],
+                "eventHubReceivers": [],
+                "itsmReceivers": [],
+                "azureAppPushReceivers": [],
+                "automationRunbookReceivers": [],
+                "voiceReceivers": [],
+                "logicAppReceivers": [],
+                "azureFunctionReceivers": [],
+                "armRoleReceivers": [
+                    {
+                        "name": "Monitoring Contributor",
+                        "roleId": "749f88d5-cbae-40b8-bcfc-e573ddc772fa",
+                        "useCommonAlertSchema": true
+                    },
+                    {
+                        "name": "Monitoring Reader",
+                        "roleId": "43d0d8ad-25c7-4714-9337-8ba259a9fe05",
+                        "useCommonAlertSchema": true
+                    }
+                ]
+            }
+        },
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2020-02-02",
+            "name": "[parameters('components_glc_calculator_demo_funcapp_name')]",
+            "location": "eastus",
+            "tags": {
+                "scope": "demo"
+            },
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Redfield",
+                "Request_Source": "IbizaWebAppExtensionCreate",
+                "RetentionInDays": 90,
+                "WorkspaceResourceId": "[parameters('workspaces_DefaultWorkspace_a1cfa2e7_8766_4396_8ca0_669a148ad292_EUS_externalid')]",
+                "IngestionMode": "LogAnalytics",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2020-02-02",
+            "name": "[parameters('components_glc_calculator_demo_webapp_name')]",
+            "location": "eastus",
+            "tags": {
+                "scope": "demo"
+            },
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Redfield",
+                "Request_Source": "IbizaWebAppExtensionCreate",
+                "RetentionInDays": 90,
+                "WorkspaceResourceId": "[parameters('workspaces_DefaultWorkspace_a1cfa2e7_8766_4396_8ca0_669a148ad292_EUS_externalid')]",
+                "IngestionMode": "LogAnalytics",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[parameters('namespaces_glc_calculator_demo_bus_name')]",
+            "location": "East US",
+            "tags": {
+                "scope": "demo"
+            },
+            "sku": {
+                "name": "Basic",
+                "tier": "Basic"
+            },
+            "properties": {
+                "premiumMessagingPartitions": 0,
+                "minimumTlsVersion": "1.2",
+                "publicNetworkAccess": "Enabled",
+                "disableLocalAuth": false,
+                "zoneRedundant": false
+            }
+        },
+        {
+            "type": "Microsoft.SignalRService/SignalR",
+            "apiVersion": "2023-03-01-preview",
+            "name": "[parameters('SignalR_glc_calculator_demo_signalr_name')]",
+            "location": "eastus",
+            "tags": {
+                "scope": "demo"
+            },
+            "sku": {
+                "name": "Free_F1",
+                "tier": "Free",
+                "size": "F1",
+                "capacity": 1
+            },
+            "kind": "SignalR",
+            "properties": {
+                "tls": {
+                    "clientCertEnabled": false
+                },
+                "features": [
+                    {
+                        "flag": "ServiceMode",
+                        "value": "Serverless",
+                        "properties": {}
+                    },
+                    {
+                        "flag": "EnableConnectivityLogs",
+                        "value": "True",
+                        "properties": {}
+                    }
+                ],
+                "cors": {
+                    "allowedOrigins": [
+                        "*"
+                    ]
+                },
+                "serverless": {
+                    "connectionTimeoutInSeconds": 30
+                },
+                "upstream": {},
+                "networkACLs": {
+                    "defaultAction": "Deny",
+                    "publicNetwork": {
+                        "allow": [
+                            "ServerConnection",
+                            "ClientConnection",
+                            "RESTAPI",
+                            "Trace"
+                        ]
+                    },
+                    "privateEndpoints": []
+                },
+                "publicNetworkAccess": "Enabled",
+                "disableLocalAuth": false,
+                "disableAadAuth": false
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[parameters('servers_glc_calculator_demo_server_name')]",
+            "location": "eastus",
+            "tags": {
+                "scope": "demo"
+            },
+            "kind": "v12.0",
+            "properties": {
+                "administratorLogin": "demouser",
+                "version": "12.0",
+                "minimalTlsVersion": "1.2",
+                "publicNetworkAccess": "Enabled",
+                "restrictOutboundNetworkAccess": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2022-09-01",
+            "name": "[parameters('serverfarms_ASP_calculatordemo_8234_name')]",
+            "location": "East US",
+            "tags": {
+                "scope": "demo"
+            },
+            "sku": {
+                "name": "Y1",
+                "tier": "Dynamic",
+                "size": "Y1",
+                "family": "Y",
+                "capacity": 0
+            },
+            "kind": "functionapp",
+            "properties": {
+                "perSiteScaling": false,
+                "elasticScaleEnabled": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0,
+                "zoneRedundant": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2022-09-01",
+            "name": "[parameters('serverfarms_ASP_calculatordemo_a2bd_name')]",
+            "location": "East US",
+            "tags": {
+                "scope": "demo"
+            },
+            "sku": {
+                "name": "F1",
+                "tier": "Free",
+                "size": "F1",
+                "family": "F",
+                "capacity": 0
+            },
+            "kind": "app",
+            "properties": {
+                "perSiteScaling": false,
+                "elasticScaleEnabled": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0,
+                "zoneRedundant": false
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/degradationindependencyduration')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "degradationindependencyduration",
+                    "DisplayName": "Degradation in dependency duration",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/degradationindependencyduration')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "degradationindependencyduration",
+                    "DisplayName": "Degradation in dependency duration",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/degradationinserverresponsetime')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "degradationinserverresponsetime",
+                    "DisplayName": "Degradation in server response time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/degradationinserverresponsetime')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "degradationinserverresponsetime",
+                    "DisplayName": "Degradation in server response time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/digestMailConfiguration')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "digestMailConfiguration",
+                    "DisplayName": "Digest Mail Configuration",
+                    "Description": "This rule describes the digest mail preferences",
+                    "HelpUrl": "www.homail.com",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/digestMailConfiguration')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "digestMailConfiguration",
+                    "DisplayName": "Digest Mail Configuration",
+                    "Description": "This rule describes the digest mail preferences",
+                    "HelpUrl": "www.homail.com",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/extension_billingdatavolumedailyspikeextension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_billingdatavolumedailyspikeextension",
+                    "DisplayName": "Abnormal rise in daily data volume (preview)",
+                    "Description": "This detection rule automatically analyzes the billing data generated by your application, and can warn you about an unusual increase in your application's billing costs",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/tree/master/SmartDetection/billing-data-volume-daily-spike.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/extension_billingdatavolumedailyspikeextension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_billingdatavolumedailyspikeextension",
+                    "DisplayName": "Abnormal rise in daily data volume (preview)",
+                    "Description": "This detection rule automatically analyzes the billing data generated by your application, and can warn you about an unusual increase in your application's billing costs",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/tree/master/SmartDetection/billing-data-volume-daily-spike.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/extension_canaryextension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_canaryextension",
+                    "DisplayName": "Canary extension",
+                    "Description": "Canary extension",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/extension_canaryextension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_canaryextension",
+                    "DisplayName": "Canary extension",
+                    "Description": "Canary extension",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/extension_exceptionchangeextension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_exceptionchangeextension",
+                    "DisplayName": "Abnormal rise in exception volume (preview)",
+                    "Description": "This detection rule automatically analyzes the exceptions thrown in your application, and can warn you about unusual patterns in your exception telemetry.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/abnormal-rise-in-exception-volume.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/extension_exceptionchangeextension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_exceptionchangeextension",
+                    "DisplayName": "Abnormal rise in exception volume (preview)",
+                    "Description": "This detection rule automatically analyzes the exceptions thrown in your application, and can warn you about unusual patterns in your exception telemetry.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/abnormal-rise-in-exception-volume.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/extension_memoryleakextension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_memoryleakextension",
+                    "DisplayName": "Potential memory leak detected (preview)",
+                    "Description": "This detection rule automatically analyzes the memory consumption of each process in your application, and can warn you about potential memory leaks or increased memory consumption.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/tree/master/SmartDetection/memory-leak.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/extension_memoryleakextension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_memoryleakextension",
+                    "DisplayName": "Potential memory leak detected (preview)",
+                    "Description": "This detection rule automatically analyzes the memory consumption of each process in your application, and can warn you about potential memory leaks or increased memory consumption.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/tree/master/SmartDetection/memory-leak.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/extension_securityextensionspackage')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_securityextensionspackage",
+                    "DisplayName": "Potential security issue detected (preview)",
+                    "Description": "This detection rule automatically analyzes the telemetry generated by your application and detects potential security issues.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/application-security-detection-pack.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/extension_securityextensionspackage')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_securityextensionspackage",
+                    "DisplayName": "Potential security issue detected (preview)",
+                    "Description": "This detection rule automatically analyzes the telemetry generated by your application and detects potential security issues.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/application-security-detection-pack.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/extension_traceseveritydetector')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_traceseveritydetector",
+                    "DisplayName": "Degradation in trace severity ratio (preview)",
+                    "Description": "This detection rule automatically analyzes the trace logs emitted from your application, and can warn you about unusual patterns in the severity of your trace telemetry.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/degradation-in-trace-severity-ratio.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/extension_traceseveritydetector')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_traceseveritydetector",
+                    "DisplayName": "Degradation in trace severity ratio (preview)",
+                    "Description": "This detection rule automatically analyzes the trace logs emitted from your application, and can warn you about unusual patterns in the severity of your trace telemetry.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/degradation-in-trace-severity-ratio.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/longdependencyduration')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "longdependencyduration",
+                    "DisplayName": "Long dependency duration",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/longdependencyduration')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "longdependencyduration",
+                    "DisplayName": "Long dependency duration",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/migrationToAlertRulesCompleted')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "migrationToAlertRulesCompleted",
+                    "DisplayName": "Migration To Alert Rules Completed",
+                    "Description": "A configuration that controls the migration state of Smart Detection to Smart Alerts",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": false,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": false,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/migrationToAlertRulesCompleted')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "migrationToAlertRulesCompleted",
+                    "DisplayName": "Migration To Alert Rules Completed",
+                    "Description": "A configuration that controls the migration state of Smart Detection to Smart Alerts",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": false,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": false,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/slowpageloadtime')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "slowpageloadtime",
+                    "DisplayName": "Slow page load time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/slowpageloadtime')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "slowpageloadtime",
+                    "DisplayName": "Slow page load time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_funcapp_name'), '/slowserverresponsetime')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "slowserverresponsetime",
+                    "DisplayName": "Slow server response time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_glc_calculator_demo_webapp_name'), '/slowserverresponsetime')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "slowserverresponsetime",
+                    "DisplayName": "Slow server response time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/authorizationrules",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_glc_calculator_demo_bus_name'), '/RootManageSharedAccessKey')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_glc_calculator_demo_bus_name'))]"
+            ],
+            "properties": {
+                "rights": [
+                    "Listen",
+                    "Manage",
+                    "Send"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/networkRuleSets",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_glc_calculator_demo_bus_name'), '/default')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_glc_calculator_demo_bus_name'))]"
+            ],
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "defaultAction": "Allow",
+                "virtualNetworkRules": [],
+                "ipRules": []
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_glc_calculator_demo_bus_name'), '/calculations')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_glc_calculator_demo_bus_name'))]"
+            ],
+            "properties": {
+                "maxMessageSizeInKilobytes": 256,
+                "lockDuration": "PT1M",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P14D",
+                "deadLetteringOnMessageExpiration": true,
+                "enableBatchedOperations": true,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advancedThreatProtectionSettings",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/CreateIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/DbParameterization')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/DefragmentIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/DropIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/ForceLastGoodPlan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/auditingPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/Default')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "auditingState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/auditingSettings",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "auditActionsAndGroups": [],
+                "isStorageSecondaryKeyInUse": false,
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/connectionPolicies",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/default')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "connectionType": "Default"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "tags": {
+                "scope": "demo"
+            },
+            "sku": {
+                "name": "Basic",
+                "tier": "Basic",
+                "capacity": 5
+            },
+            "kind": "v12.0,user",
+            "properties": {
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "maxSizeBytes": 2147483648,
+                "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+                "zoneRedundant": false,
+                "readScale": "Disabled",
+                "requestedBackupStorageRedundancy": "Local",
+                "maintenanceConfigurationId": "/subscriptions/a1cfa2e7-8766-4396-8ca0-669a148ad292/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default",
+                "isLedgerOn": false,
+                "availabilityZone": "NoPreference"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advancedThreatProtectionSettings",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/master/Default')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "auditingState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingSettings",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/ledgerDigestUploads",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/master/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/securityAlertPolicies",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/master/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "recurringScans": {
+                    "isEnabled": false,
+                    "emailSubscriptionAdmins": true
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/devOpsAuditingSettings",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/encryptionProtector",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "kind": "servicemanaged",
+            "properties": {
+                "serverKeyName": "ServiceManaged",
+                "serverKeyType": "ServiceManaged",
+                "autoRotationEnabled": false
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/extendedAuditingSettings",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "auditActionsAndGroups": [],
+                "isStorageSecondaryKeyInUse": false,
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/AllowAllWindowsAzureIps')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/ClientIp-2023-5-2_17-20-3')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/keys",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/ServiceManaged')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "kind": "servicemanaged",
+            "properties": {
+                "serverKeyType": "ServiceManaged"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/securityAlertPolicies",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/sqlVulnerabilityAssessments",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "recurringScans": {
+                    "isEnabled": false,
+                    "emailSubscriptionAdmins": true
+                },
+                "storageContainerPath": "[parameters('vulnerabilityAssessments_Default_storageContainerPath')]"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-09-01",
+            "name": "[parameters('sites_glc_calculator_demo_funcapp_name')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_calculatordemo_8234_name'))]"
+            ],
+            "tags": {
+                "scope": "demo",
+                "hidden-link: /app-insights-resource-id": "/subscriptions/a1cfa2e7-8766-4396-8ca0-669a148ad292/resourceGroups/calculator-demo/providers/microsoft.insights/components/glc-calculator-demo-funcapp",
+                "hidden-link: /app-insights-instrumentation-key": "f0ac4722-2cc8-4c89-8ee4-a9e95a475aaa",
+                "hidden-link: /app-insights-conn-string": "InstrumentationKey=f0ac4722-2cc8-4c89-8ee4-a9e95a475aaa;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/"
+            },
+            "kind": "functionapp",
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_glc_calculator_demo_funcapp_name'), '.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('sites_glc_calculator_demo_funcapp_name'), '.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_calculatordemo_8234_name'))]",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": false,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": false,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 200,
+                    "minimumElasticInstanceCount": 0
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": false,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "A7D5E3BFC851C3A1B5A124E377C9839ECC2DACA647F657F7F94A0540B094CA28",
+                "containerSize": 1536,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": true,
+                "redundancyMode": "None",
+                "publicNetworkAccess": "Enabled",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-09-01",
+            "name": "[parameters('sites_glc_calculator_demo_webapp_name')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_calculatordemo_a2bd_name'))]"
+            ],
+            "tags": {
+                "scope": "demo"
+            },
+            "kind": "app",
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_glc_calculator_demo_webapp_name'), '.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('sites_glc_calculator_demo_webapp_name'), '.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_calculatordemo_a2bd_name'))]",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": false,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": false,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 0,
+                    "minimumElasticInstanceCount": 0
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": true,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "A7D5E3BFC851C3A1B5A124E377C9839ECC2DACA647F657F7F94A0540B094CA28",
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": true,
+                "redundancyMode": "None",
+                "publicNetworkAccess": "Enabled",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_funcapp_name'), '/ftp')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "tags": {
+                "scope": "demo",
+                "hidden-link: /app-insights-resource-id": "/subscriptions/a1cfa2e7-8766-4396-8ca0-669a148ad292/resourceGroups/calculator-demo/providers/microsoft.insights/components/glc-calculator-demo-funcapp",
+                "hidden-link: /app-insights-instrumentation-key": "f0ac4722-2cc8-4c89-8ee4-a9e95a475aaa",
+                "hidden-link: /app-insights-conn-string": "InstrumentationKey=f0ac4722-2cc8-4c89-8ee4-a9e95a475aaa;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/"
+            },
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_webapp_name'), '/ftp')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_webapp_name'))]"
+            ],
+            "tags": {
+                "scope": "demo"
+            },
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_funcapp_name'), '/scm')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "tags": {
+                "scope": "demo",
+                "hidden-link: /app-insights-resource-id": "/subscriptions/a1cfa2e7-8766-4396-8ca0-669a148ad292/resourceGroups/calculator-demo/providers/microsoft.insights/components/glc-calculator-demo-funcapp",
+                "hidden-link: /app-insights-instrumentation-key": "f0ac4722-2cc8-4c89-8ee4-a9e95a475aaa",
+                "hidden-link: /app-insights-conn-string": "InstrumentationKey=f0ac4722-2cc8-4c89-8ee4-a9e95a475aaa;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/"
+            },
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_webapp_name'), '/scm')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_webapp_name'))]"
+            ],
+            "tags": {
+                "scope": "demo"
+            },
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_funcapp_name'), '/web')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "tags": {
+                "scope": "demo",
+                "hidden-link: /app-insights-resource-id": "/subscriptions/a1cfa2e7-8766-4396-8ca0-669a148ad292/resourceGroups/calculator-demo/providers/microsoft.insights/components/glc-calculator-demo-funcapp",
+                "hidden-link: /app-insights-instrumentation-key": "f0ac4722-2cc8-4c89-8ee4-a9e95a475aaa",
+                "hidden-link: /app-insights-conn-string": "InstrumentationKey=f0ac4722-2cc8-4c89-8ee4-a9e95a475aaa;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/"
+            },
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php"
+                ],
+                "netFrameworkVersion": "v6.0",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": false,
+                "acrUseManagedIdentityCreds": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$glc-calculator-demo-funcapp",
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "vnetRouteAllEnabled": false,
+                "vnetPrivatePortsCount": 0,
+                "publicNetworkAccess": "Enabled",
+                "cors": {
+                    "allowedOrigins": [
+                        "https://portal.azure.com",
+                        "https://glc-calculator-demo-webapp.azurewebsites.net"
+                    ],
+                    "supportCredentials": true
+                },
+                "localMySqlEnabled": false,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "scmMinTlsVersion": "1.2",
+                "ftpsState": "FtpsOnly",
+                "preWarmedInstanceCount": 0,
+                "functionAppScaleLimit": 200,
+                "functionsRuntimeScaleMonitoringEnabled": false,
+                "minimumElasticInstanceCount": 0,
+                "azureStorageAccounts": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_webapp_name'), '/web')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_webapp_name'))]"
+            ],
+            "tags": {
+                "scope": "demo"
+            },
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "nodeVersion": "~18",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": false,
+                "acrUseManagedIdentityCreds": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$glc-calculator-demo-webapp",
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot\\calculator-app",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "vnetRouteAllEnabled": false,
+                "vnetPrivatePortsCount": 0,
+                "publicNetworkAccess": "Enabled",
+                "localMySqlEnabled": false,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "scmMinTlsVersion": "1.2",
+                "ftpsState": "FtpsOnly",
+                "preWarmedInstanceCount": 0,
+                "elasticWebAppScaleLimit": 0,
+                "functionsRuntimeScaleMonitoringEnabled": false,
+                "minimumElasticInstanceCount": 0,
+                "azureStorageAccounts": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_funcapp_name'), '/0c41cf98c7fd413b887423e24b7fd9d9')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2023-05-04T00:38:49.9027991Z",
+                "end_time": "2023-05-04T00:38:50.2942578Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_webapp_name'), '/452e1cf7b31e42e4b033bbf12c05d1c6')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2023-05-03T21:34:03.4312758Z",
+                "end_time": "2023-05-03T21:34:06.5262758Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_funcapp_name'), '/719ce51c39aa429eb67978580f4df4c8')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2023-05-03T22:56:46.6722047Z",
+                "end_time": "2023-05-03T22:56:47.1548344Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_funcapp_name'), '/8e2b8894c6bf45309f1edf851660f022')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2023-05-03T21:22:55.8727312Z",
+                "end_time": "2023-05-03T21:22:56.322261Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_funcapp_name'), '/a13b1498788e473f9a15d738bc8f1200')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2023-05-04T00:00:21.2713913Z",
+                "end_time": "2023-05-04T00:00:21.6783554Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_funcapp_name'), '/a6f002623a4444c0a7febd0931b82854')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2023-05-04T00:34:41.6754384Z",
+                "end_time": "2023-05-04T00:34:42.081698Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_webapp_name'), '/b9be05173de44daab40025aefebd45ba')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2023-05-04T01:11:33.3086799Z",
+                "end_time": "2023-05-04T01:11:36.2932963Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_webapp_name'), '/ba22b899368e42fc982fe7a5cff6b493')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2023-05-03T21:11:03.6238672Z",
+                "end_time": "2023-05-03T21:11:17.8213256Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_webapp_name'), '/ee6b16c0584243bd819df6c965b4c545')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "ms-azuretools-vscode",
+                "deployer": "ms-azuretools-vscode",
+                "message": "Created via a push deployment",
+                "start_time": "2023-05-04T00:01:28.4061999Z",
+                "end_time": "2023-05-04T00:01:31.2189262Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_funcapp_name'), '/', parameters('sites_glc_calculator_demo_funcapp_name'), '.azurewebsites.net')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_funcapp_name'))]"
+            ],
+            "properties": {
+                "siteName": "glc-calculator-demo-funcapp",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_glc_calculator_demo_webapp_name'), '/', parameters('sites_glc_calculator_demo_webapp_name'), '.azurewebsites.net')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_glc_calculator_demo_webapp_name'))]"
+            ],
+            "properties": {
+                "siteName": "glc-calculator-demo-webapp",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "microsoft.alertsmanagement/smartdetectoralertrules",
+            "apiVersion": "2021-04-01",
+            "name": "[parameters('smartdetectoralertrules_failure_anomalies___glc_calculator_demo_funcapp_name')]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]",
+                "[resourceId('microsoft.insights/actionGroups', parameters('actionGroups_Application_Insights_Smart_Detection_name'))]"
+            ],
+            "properties": {
+                "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
+                "state": "Enabled",
+                "severity": "Sev3",
+                "frequency": "PT1M",
+                "detector": {
+                    "id": "FailureAnomaliesDetector"
+                },
+                "scope": [
+                    "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_funcapp_name'))]"
+                ],
+                "actionGroups": {
+                    "groupIds": [
+                        "[resourceId('microsoft.insights/actionGroups', parameters('actionGroups_Application_Insights_Smart_Detection_name'))]"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "microsoft.alertsmanagement/smartdetectoralertrules",
+            "apiVersion": "2021-04-01",
+            "name": "[parameters('smartdetectoralertrules_failure_anomalies___glc_calculator_demo_webapp_name')]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]",
+                "[resourceId('microsoft.insights/actionGroups', parameters('actionGroups_Application_Insights_Smart_Detection_name'))]"
+            ],
+            "properties": {
+                "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
+                "state": "Enabled",
+                "severity": "Sev3",
+                "frequency": "PT1M",
+                "detector": {
+                    "id": "FailureAnomaliesDetector"
+                },
+                "scope": [
+                    "[resourceId('microsoft.insights/components', parameters('components_glc_calculator_demo_webapp_name'))]"
+                ],
+                "actionGroups": {
+                    "groupIds": [
+                        "[resourceId('microsoft.insights/actionGroups', parameters('actionGroups_Application_Insights_Smart_Detection_name'))]"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advancedThreatProtectionSettings",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/CreateIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/DbParameterization')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/DefragmentIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/DropIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/ForceLastGoodPlan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/Default')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "auditingState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingSettings",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "weeklyRetention": "PT0S",
+                "monthlyRetention": "PT0S",
+                "yearlyRetention": "PT0S",
+                "weekOfYear": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 7,
+                "diffBackupIntervalInHours": 24
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/ledgerDigestUploads",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/securityAlertPolicies",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments",
+            "apiVersion": "2022-08-01-preview",
+            "name": "[concat(parameters('servers_glc_calculator_demo_server_name'), '/glc-calculator-demo-db/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_glc_calculator_demo_server_name'), 'glc-calculator-demo-db')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_glc_calculator_demo_server_name'))]"
+            ],
+            "properties": {
+                "recurringScans": {
+                    "isEnabled": false,
+                    "emailSubscriptionAdmins": true
+                }
+            }
+        }
+    ]
+}
