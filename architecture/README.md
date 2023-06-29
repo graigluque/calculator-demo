@@ -1,4 +1,4 @@
-# Solution Architecture
+![Calculator-demo-Azure-deployment-view](https://github.com/graigluque/calculator-demo/assets/50812467/b810333f-ae9e-423b-a317-ebe6381bbc80)# Solution Architecture
 
 Following is described the solution architecture for a Simple Calculator Demo:
 
@@ -6,7 +6,7 @@ Following is described the solution architecture for a Simple Calculator Demo:
 
 ##### Data flow diagram
 
-![context-view](https://lh3.googleusercontent.com/drive-viewer/AFGJ81pxCvs0t9ttv6NqGcoeQY4ZooILoV77U0oNzr-dbtEbS8G79ZNHHtHlecqEQ8oZD0FF6gp7Z_8sxp3amH6n6MBPCNZAzQ=w1366-h653)
+![context-view](images/Calculator-demo-context.png?raw=true "Context view")
 
 1. User use the Web App to request a new calculation
 2. Web App publish a new message in a Queue of the Azure Service Bus
@@ -34,7 +34,7 @@ The process view deals with the dynamic aspects of the system, explains the syst
 
 ##### Sequence diagram
 
-![seq-diagram](https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgQ2FsY3VsYXRvci1kZW1vIHNlcXVlbmNlCgphY3RvciBVc2VyClVzZXItPldlYiBBcHA6IEFjY2VzcyB0byAADAcKABQHLT5TaWduYWxSOiBTdGFibGlzaCAACwcgQ29ubmVjdGlvbgA_EFJlcXVlc3QgbmV3AIEGCWlvbgBKC2VydmljZSBCdXM6IFNlbmQgTWVzc2FnZSgAJA8pCgAgCy0-RnVuYwCBLAZRdWV1ZSB0cmlnZ2VycwoAEQgAFwwAggEIZSBvcGVyAHwGAB4KRGF0YWJhc2U6IFNhdgCCLAoAFw4AgXMKAIEZCwoAggwHAII1C05vdGlmeQCBYAwgUmVzdWx0AII-ClVzZXI6IFNob3cAghIFABgHAIJ5D0xlYXZlAIJpG0Nsb3NlAIJtFA&s=modern-blue)
+![seq-diagram](images/Calculator-demo-sequence-diagram.png?raw=true "Sequence diagram")
 
 ### Development view
 
@@ -42,7 +42,7 @@ The development view illustrates a system from a programmer's perspective and is
 
 ##### Component diagram
 
-![component-diagram](https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81qBBGaEizte0DBGbhFRwPkbHI90P2P3M5xdWJqQb5Z7yIHmZBzjjT6xQyyamQ8ew-pdebx3EuRVkPTn8rxBJEuJe_yRhw=w1920-h904)
+![component-diagram](images/Calculator-demo-Component-view.png?raw=true "Component view")
 
 ### Physical view
 
@@ -50,7 +50,7 @@ The physical view (aka the deployment view) depicts the system from a system eng
 
 ##### Deployment diagram
 
-![deployment-diagram](https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81paNBSDAE86aiv7OEKR59_WcT64JelyluIozWbHPHWmJ8G5ELa6TBDiUdC6GFI4XMoXtCHB-r-WFERVJgajQ7ynFGrd6Q=w1920-h904)
+![deployment-diagram](images/Calculator-demo-Azure-deployment-view.png?raw=true "Deployment view")
 
 > [TODO: refine diagrama]
 
@@ -60,7 +60,7 @@ The description of an architecture is illustrated using a small set of use cases
 
 ##### Use cases diagram
 
-![use-cases](https://lh3.googleusercontent.com/u/0/drive-viewer/AFGJ81oigleVo-P0QXQiOE6F7U3w8WC6Lf9lE-f_06rukvli1aWwQHc4xfo2NKngIdVIsF_E2LXFP1mbdW6ZtPf1u8Nt7gfF=w1920-h904)
+![use-cases](images/Calculator-demo-Use-case.png?raw=true "Uses cases view")
 
 ## References
 
