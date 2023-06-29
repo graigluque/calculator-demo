@@ -24,7 +24,7 @@ Also, create a Data flow diagram and Sequence Diagram.
 
 ## Resoruces (folders)
 
-- architecture: Architecture documentation.
+- architecture: [Architecture documentation](https://github.com/graigluque/calculator-demo/tree/master/architecture).
 - angular-app: Angular Single Page Application code.
 - function-app: Azure Functions App code in Dotnet Core 6.0 and C# language.
 - azure-resource-template: Azure template for cloud resources.
